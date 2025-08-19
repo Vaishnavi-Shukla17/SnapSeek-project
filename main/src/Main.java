@@ -1,5 +1,5 @@
 class Main{
     public static void main(String[] args) {
-        System.out.println("hello Snap--Seek");
+        System.out.println("hello Snap-Seek");
     }
 }

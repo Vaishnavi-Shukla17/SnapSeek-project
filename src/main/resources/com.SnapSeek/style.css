@@ -1,0 +1,49 @@
+.root {
+    -fx-background-image: url("/com.SnapSeek/images/back.png");
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+    -fx-background-repeat: no-repeat;
+}
+
+#bottomResultsBox {
+    -fx-background-color: transparent;
+}
+
+#resultsPane {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+    -fx-border-color: transparent;
+}
+#searchField {
+    -fx-background-color: rgba(255,255,255,0.5);
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-padding: 0 15 0 15;
+    -fx-font-size: 14pt;
+    -fx-pref-height: 40;
+    -fx-pref-width: 350;
+
+
+    -fx-prompt-text-fill: rgba(255,255,255,0.6);
+}
+#searchButton {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 14pt;
+    -fx-border-color: rgba(255,255,255,0.1); /* optional subtle border */
+    -fx-border-radius: 20;
+    -fx-background-radius: 20;
+
+}
+#folderButton{
+    -fx-background-color: transparent;
+        -fx-text-fill: white;
+        -fx-font-size: 14pt;
+        -fx-border-color: rgba(255,255,255,0.1); /* optional subtle border */
+        -fx-border-radius: 20;
+        -fx-background-radius: 20;
+}

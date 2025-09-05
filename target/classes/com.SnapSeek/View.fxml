@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17.0.12"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.SnapSeek.MainController"
+            stylesheets="@style.css">
+
+    <!-- MenuBar at the top -->
+    <top>
+        <HBox prefWidth="100" alignment="CENTER_LEFT">
+            <!-- Left half empty -->
+            <Region HBox.hgrow="ALWAYS">
+                <HBox.margin>
+                    <Insets left="65"/> <!-- adjust this to move MenuBar further right -->
+                </HBox.margin>
+            </Region>
+
+            <!-- Right half MenuBar -->
+            <MenuBar HBox.hgrow="ALWAYS">
+
+                <Menu text="Help">
+                    <MenuItem text="About"/>
+                </Menu>
+            </MenuBar>
+        </HBox>
+    </top>
+    <!-- Main content area inside a scrollable region -->
+    <center>
+        <!-- HBox to split left and right halves -->
+        <HBox prefWidth="600" prefHeight="400">
+            <Region HBox.hgrow="ALWAYS">
+                <HBox.margin>
+                    <Insets left="200"/> <!-- add extra left margin to push right -->
+                </HBox.margin>
+            </Region>
+            <!-- Left half empty -->
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <!-- Right half -->
+            <VBox spacing="20" alignment="CENTER" HBox.hgrow="ALWAYS">
+                <HBox spacing="10" alignment="CENTER">
+                    <TextField fx:id="searchField" prefWidth="350" prefHeight="40" promptText="Search Image..."
+                               style="-fx-background-radius: 20; -fx-border-radius: 20; -fx-padding: 0 10 0 10; -fx-font-size: 14pt;"/>
+                    <Button fx:id="searchButton" text="Search" onAction="#handleSearch" />
+                </HBox>
+                <Button fx:id="folderButton" text="Select Folder" onAction="#handleSelectFolder"/>
+            </VBox>
+        </HBox>
+    </center>
+
+    <bottom>
+        <VBox fx:id="bottomResultsBox" spacing="5" BorderPane.alignment="CENTER" maxHeight="200">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+            <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-border-color: transparent;">
+                <FlowPane fx:id="resultsPane" hgap="12" vgap="12" alignment="CENTER" />
+            </ScrollPane>
+        </VBox>
+    </bottom>
+
+</BorderPane>

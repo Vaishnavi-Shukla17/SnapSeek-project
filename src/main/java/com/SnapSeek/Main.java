@@ -12,15 +12,10 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        URL fxmlUrl = Main.class.getResource("/com.SnapSeek/View.fxml");
-        System.out.println(fxmlUrl);  // Should print something like: file:/C:/.../target/classes/com/SnapSeek/View.fxml
-        FXMLLoader loader = new FXMLLoader(fxmlUrl);
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("/com.SnapSeek/View.fxml"));
         Parent root = loader.load();
 
-         loader = new FXMLLoader(Main.class.getResource("/com.SnapSeek/View.fxml"));
-        root = loader.load();
-
-        Scene scene = new Scene(root, 800, 600);
+        Scene scene = new Scene(root, 1500, 800);
         primaryStage.setTitle("SnapSeek - AI Image Search");
         primaryStage.setScene(scene);
         primaryStage.show();

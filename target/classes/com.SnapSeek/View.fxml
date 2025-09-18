@@ -4,6 +4,8 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
 <BorderPane xmlns="http://javafx.com/javafx/17.0.12"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.SnapSeek.MainController"
@@ -50,6 +52,27 @@
                 <Button fx:id="folderButton" text="Select Folder" onAction="#handleSelectFolder"/>
             </VBox>
         </HBox>
+        <VBox>
+            <HBox spacing="10" alignment="CENTER">
+                <Button fx:id="selectImageButton" text="Select Image" onAction="#handleSelectImage"/>
+                <Label fx:id="selectImageLabel" text="No Image Selected"/>
+            </HBox>
+            <HBox spacing="10" alignment="CENTER">
+                <Label text="Caption Style: "/>
+                <ComboBox fx:id="captionTypeDropDown" prefWidth="150">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="Funny"/>
+                            <String fx:value="Love"/>
+                            <String fx:value="Energetic"/>
+                        </FXCollections>
+                    </items>
+                </ComboBox>
+            <Button fx:id="generateCaptionButton" text="Generate" onAction="#handleGenerateCaption"/>
+            </HBox>
+            <TextArea fx:id="captionOutputArea" prefRowCount="3" wrapText="true" promptText="Generated Caption Will Appear Here."/>
+
+        </VBox>
     </center>
 
     <bottom>

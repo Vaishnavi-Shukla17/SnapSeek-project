@@ -47,3 +47,36 @@
         -fx-border-radius: 20;
         -fx-background-radius: 20;
 }
+#generateCaptionButton{
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 14pt;
+    -fx-border-color: rgba(255,255,255,0.1); /* optional subtle border */
+    -fx-border-radius: 20;
+    -fx-background-radius: 20;
+
+
+}
+#captionTypeDropDown{
+        -fx-background-color: transparent;
+        -fx-text-fill: white;
+        -fx-font-size: 14pt;
+        -fx-border-color: rgba(255,255,255,0.1); /* optional subtle border */
+        -fx-border-radius: 20;
+        -fx-background-radius: 20;
+        -fx-prompt-text-fill: white;
+
+
+}
+#selectImageButton{
+ -fx-background-color: transparent;
+        -fx-text-fill: white;
+        -fx-font-size: 14pt;
+        -fx-border-color: rgba(255,255,255,0.1); /* optional subtle border */
+        -fx-border-radius: 20;
+        -fx-background-radius: 20;
+        -fx-prompt-text-fill: white;
+}
+.combo-box .text {
+    -fx-fill: white;           /* applies to displayed text */
+}

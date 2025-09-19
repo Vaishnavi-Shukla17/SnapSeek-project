@@ -100,13 +100,48 @@ public class MainController {
         }
     }
 
-    public void handleGenerateCaption(ActionEvent actionEvent) {
-        if(selectedImagePath==null){
-            captionOutputArea.setText("⚠ Please select an image first.");
-            return;
+    @FXML
+    private void handleGenerateCaption() {
+        try {
+            String imagePath = selectedImagePath; // set when "Select Image" is clicked
+            String captionType = selectedCaptionType; // e.g. from a ComboBox or toggle
+
+            // Safety checks
+            if (imagePath == null) {
+                captionOutputArea.setText("⚠️ No image selected!");
+                return;
+            }
+            if (captionType == null) {
+                captionOutputArea.setText("⚠️ No caption type selected!");
+                return;
+            }
+
+            // Run Python script with TWO arguments
+            ProcessBuilder pb = new ProcessBuilder(
+                    "python", "caption_cli.py", imagePath, captionType
+            );
+            pb.redirectErrorStream(true);
+
+            Process process = pb.start();
+
+            // Capture output
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line, caption = "";
+            while ((line = reader.readLine()) != null) {
+                caption += line + "\n";
+            }
+
+            int exitCode = process.waitFor();
+            if (exitCode == 0) {
+                captionOutputArea.setText(caption.trim());
+            } else {
+                captionOutputArea.setText("❌ Failed to generate caption.");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            captionOutputArea.setText("Error: " + e.getMessage());
         }
-        String captionType=captionTypeDropDown.getValue();
-        if(captionType==null)captionType="Funny";
-        captionOutputArea.setText("Generated " + captionType + " caption for: " + selectedImagePath);
     }
+
 }

@@ -1,25 +1,37 @@
+# Envs
+.venv/
 venv/
+env/
+.Python
 
-pycache/
+# Python cache/bytecode
+__pycache__/
+*.py[cod]
 
+# Secrets
 .env
 
-*.pyc
-
+# Editors/OS
 .DS_Store
-
 .idea/
-
 .vscode/
 
+# Project data & models (ignored by default)
 Data/
-
 models/
-
 Storage/
 
+# Large/binary formats often for models
 *.pt
-
 *.bin
-
 *.ckpt
+
+# Test/build/caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+coverage.xml
+.coverage*
+build/
+dist/
+*.egg-info/

@@ -17,9 +17,13 @@ __pycache__/
 .vscode/
 
 # Project data & models (ignored by default)
-Data/
-models/
-Storage/
+Data/*
+!Data/.gitkeep
+models/*
+!models/.gitkeep
+Storage/*
+!Storage/.gitkeep
+
 
 # Large/binary formats often for models
 *.pt

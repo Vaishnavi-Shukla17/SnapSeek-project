@@ -1,17 +1,27 @@
 package com.SnapSeek;
 
+import com.SnapSeek.integration.ApiService;
+import com.google.gson.Gson;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.util.List;
+// private File selectedFolder;
 
 public class MainController {
 
@@ -21,127 +31,240 @@ public class MainController {
     @FXML private Button generateCaptionButton;
     @FXML private TextArea captionOutputArea;
 
-    private String selectedImagePath;
-    // UI components
-    @FXML
-    private Button folderButton;    // "Select Folder" button
-    @FXML
-    private Button searchButton;    // Search button
-    @FXML
-    private TextField searchField;  // Search query input
-    @FXML
-    private FlowPane resultsPane;   //to display image results
+    @FXML private Button folderButton;
+    @FXML private Button searchButton;
+    @FXML private TextField searchField;
+    @FXML private FlowPane resultsPane;
 
-    // Data
+    private String selectedImagePath;
     private File selectedFolder;
+
+    private final ApiService apiService = new ApiService();
+    private final Gson gson = new Gson();
+
+    @FXML
+    public void initialize() {
+        captionTypeDropDown.getItems().addAll(
+                "funny",
+                "playful",
+                "professional",
+                "romantic"
+        );
+        captionTypeDropDown.setValue("funny");
+    }
 
     @FXML
     public void handleSelectFolder(ActionEvent actionEvent) {
         DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setTitle("Select Image Folder");
-
-        // Start from user's home directory
         directoryChooser.setInitialDirectory(new File(System.getProperty("user.home")));
 
-        // Open dialog
-        File folder = directoryChooser.showDialog(new Stage());
+        // File folder = directoryChooser.showDialog(new Stage());
+        File folder = directoryChooser.showDialog(folderButton.getScene().getWindow());
         if (folder != null && folder.isDirectory()) {
             selectedFolder = folder;
-            System.out.println("Selected Folder: " + selectedFolder.getAbsolutePath());
+            captionOutputArea.setText("Selected folder: " + selectedFolder.getAbsolutePath());
         } else {
-            System.out.println("No folder selected");}
+            captionOutputArea.setText("No folder selected.");
+        }
     }
 
-    @FXML
-    public void handleSearch(ActionEvent event) {
-        if (selectedFolder == null) {
-            System.out.println("Please select a folder first!");
-            return;
-        }
-
-        String query = searchField.getText().trim();
-        if (query.isEmpty()) {
-            System.out.println("Please enter a search query");
-            return;
-        }
-
-        // Clear previous results
-        resultsPane.getChildren().clear();
-
-        // Add dummy results
-        for (int i = 1; i <= 6; i++) {
-            Region placeholder = new Region();
-            placeholder.setPrefSize(100, 100);
-            placeholder.setStyle("-fx-background-color: lightgray;");
-
-            Label caption = new Label("Image " + i);
-
-            VBox card = new VBox(5);
-            card.setAlignment(Pos.CENTER);
-            card.getChildren().addAll(placeholder, caption);
-
-            resultsPane.getChildren().add(card);
-        }
-
-        System.out.println("Dummy search performed for query: " + query);
-    }
     @FXML
     public void handleSelectImage(ActionEvent actionEvent) {
-        FileChooser fileChooser= new FileChooser();
+        FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select an Image");
-        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Image Files","*.png", "*.jpg", "*.jpeg"));
-        File file= fileChooser.showOpenDialog(new Stage());
-        if(file!=null){
-            selectedImagePath= file.getAbsolutePath();
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")
+        );
+
+        File file = fileChooser.showOpenDialog(new Stage());
+        if (file != null) {
+            selectedImagePath = file.getAbsolutePath();
             selectImageLabel.setText(file.getName());
-        }else {
+        } else {
             selectImageLabel.setText("No Image Selected");
-            selectedImagePath=null;
+            selectedImagePath = null;
         }
     }
 
+    // @FXML
+    // public void handleSearch(ActionEvent event) {
+    //     String query = searchField.getText().trim();
+
+    //     if (query.isEmpty()) {
+    //         captionOutputArea.setText("Please enter a search query.");
+    //         return;
+    //     }
+
+    //     if (selectedFolder == null) {
+    //         captionOutputArea.setText("Please select a folder first.");
+    //         return;
+    //     }
+
+    //     captionOutputArea.setText("Searching...");
+    //     resultsPane.getChildren().clear();
+
+    //     new Thread(() -> {
+    //         try {
+    //             String responseJson = apiService.searchImages(query);
+    //             SearchResponse response = gson.fromJson(responseJson, SearchResponse.class);
+
+    //             Platform.runLater(() -> {
+    //                 resultsPane.getChildren().clear();
+
+    //                 if (response == null || response.results == null || response.results.isEmpty()) {
+    //                     captionOutputArea.setText("No images found.");
+    //                     return;
+    //                 }
+
+    //                 for (String imagePath : response.results) {
+    //                     File imageFile = new File(imagePath);
+
+    //                     Image image = new Image(imageFile.toURI().toString(), 120, 120, true, true);
+    //                     ImageView imageView = new ImageView(image);
+    //                     imageView.setFitWidth(120);
+    //                     imageView.setFitHeight(120);
+    //                     imageView.setPreserveRatio(true);
+
+    //                     Label imageLabel = new Label(imageFile.getName());
+
+    //                     VBox card = new VBox(5, imageView, imageLabel);
+    //                     card.setAlignment(Pos.CENTER);
+
+    //                     card.setOnMouseClicked(e -> {
+    //                         selectedImagePath = imagePath;
+    //                         selectImageLabel.setText(imageFile.getName());
+    //                         captionOutputArea.setText("Selected image: " + imageFile.getName());
+    //                     });
+
+    //                     resultsPane.getChildren().add(card);
+    //                 }
+
+    //                 captionOutputArea.setText("Search completed.");
+    //             });
+    //         } catch (Exception e) {
+    //             Platform.runLater(() ->
+    //                     captionOutputArea.setText("Search failed: " + e.getMessage())
+    //             );
+    //         }
+    //     }).start();
+    // }
+
     @FXML
-    private void handleGenerateCaption() {
+public void handleSearch(ActionEvent event) {
+    String query = searchField.getText().trim();
+
+    if (query.isEmpty()) {
+        captionOutputArea.setText("Please enter a search query.");
+        return;
+    }
+
+    if (selectedFolder == null) {
+        captionOutputArea.setText("Please select a folder first.");
+        return;
+    }
+
+    captionOutputArea.setText("Searching...");
+    resultsPane.getChildren().clear();
+
+    new Thread(() -> {
         try {
-            String imagePath = selectedImagePath; // set when "Select Image" is clicked
-            String captionType = selectedCaptionType; // e.g. from a ComboBox or toggle
+            String responseJson = apiService.searchImages(query, selectedFolder.getAbsolutePath());
+            System.out.println("Raw search response: " + responseJson);
+            SearchResponse response = gson.fromJson(responseJson, SearchResponse.class);
 
-            // Safety checks
-            if (imagePath == null) {
-                captionOutputArea.setText("⚠️ No image selected!");
-                return;
-            }
-            if (captionType == null) {
-                captionOutputArea.setText("⚠️ No caption type selected!");
-                return;
-            }
+            Platform.runLater(() -> {
+                resultsPane.getChildren().clear();
 
-            // Run Python script with TWO arguments
-            ProcessBuilder pb = new ProcessBuilder(
-                    "python", "caption_cli.py", imagePath, captionType
-            );
-            pb.redirectErrorStream(true);
+                if (response == null || response.results == null || response.results.isEmpty()) {
+                    captionOutputArea.setText("No images found.");
+                    return;
+                }
 
-            Process process = pb.start();
+                for (String imageName : response.results) {
+                    File imageFile = new File(selectedFolder, imageName);
+                    String imagePath = imageFile.getAbsolutePath();
 
-            // Capture output
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line, caption = "";
-            while ((line = reader.readLine()) != null) {
-                caption += line + "\n";
-            }
+                    if (!imageFile.exists()) {
+                        System.out.println("File not found: " + imagePath);
+                        continue;
+                    }
 
-            int exitCode = process.waitFor();
-            if (exitCode == 0) {
-                captionOutputArea.setText(caption.trim());
-            } else {
-                captionOutputArea.setText("❌ Failed to generate caption.");
-            }
+                    Image image = new Image(imageFile.toURI().toString(), 120, 120, true, true);
+                    ImageView imageView = new ImageView(image);
+                    imageView.setFitWidth(120);
+                    imageView.setFitHeight(120);
+                    imageView.setPreserveRatio(true);
+
+                    Label imageLabel = new Label(imageFile.getName());
+
+                    VBox card = new VBox(5, imageView, imageLabel);
+                    card.setAlignment(Pos.CENTER);
+
+                    card.setOnMouseClicked(e -> {
+                        selectedImagePath = imagePath;
+                        selectImageLabel.setText(imageFile.getName());
+                        captionOutputArea.setText("Selected image: " + imageFile.getName());
+                    });
+
+                    resultsPane.getChildren().add(card);
+                }
+
+                captionOutputArea.setText("Search completed.");
+            });
 
         } catch (Exception e) {
             e.printStackTrace();
-            captionOutputArea.setText("Error: " + e.getMessage());
+            Platform.runLater(() ->
+                    captionOutputArea.setText("Search failed: " + e.toString())
+            );
         }
+    }).start();
+}
+
+    @FXML
+    private void handleGenerateCaption() {
+        if (selectedImagePath == null) {
+            captionOutputArea.setText("No image selected!");
+            return;
+        }
+
+        if (selectedFolder == null) {
+            captionOutputArea.setText("Please select a folder first!");
+            return;
+        }
+
+        String tone = captionTypeDropDown.getValue();
+
+        captionOutputArea.setText("Generating caption...");
+
+        new Thread(() -> {
+            try {
+                // String responseJson = apiService.generateCaption(selectedImagePath, tone);
+                String responseJson = apiService.generateCaption(selectedImagePath, tone, selectedFolder.getAbsolutePath());
+                CaptionResponse response = gson.fromJson(responseJson, CaptionResponse.class);
+
+                Platform.runLater(() -> {
+                    if (response != null && response.caption != null) {
+                        captionOutputArea.setText(response.caption);
+                    } else {
+                        captionOutputArea.setText("No caption returned from backend.");
+                    }
+                });
+            } catch (Exception e) {
+                Platform.runLater(() ->
+                        captionOutputArea.setText("Caption failed: " + e.getMessage())
+                );
+            }
+        }).start();
     }
 
+    static class SearchResponse {
+        List<String> results;
+    }
+
+    static class CaptionResponse {
+        String caption;
+    }
 }
+

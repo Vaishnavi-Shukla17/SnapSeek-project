@@ -68,7 +68,7 @@
                         <Button fx:id="generateCaptionButton" onAction="#handleGenerateCaption" text="Generate" />
                     </HBox>
                     <TextArea fx:id="captionOutputArea"
-                              prefHeight="40" minHeight="40" maxHeight="40"
+                              prefHeight="80" minHeight="40" maxHeight="80"
                               prefWidth="180" minWidth="180" maxWidth="250"
                               promptText="Generated Caption"
                               wrapText="true"
